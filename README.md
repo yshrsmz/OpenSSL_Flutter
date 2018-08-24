@@ -1,6 +1,6 @@
-# openssl_flutter
+# OpenSSL_Flutter
 
-Flutter binding for OpenSSL
+Flutter binding of OpenSSL
 
 ## Getting Started
 
