@@ -1,0 +1,22 @@
+PODS:
+  - Flutter (1.0.0)
+  - openssl_flutter (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `.symlinks/flutter/ios`)
+  - openssl_flutter (from `.symlinks/plugins/openssl_flutter/ios`)
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: ".symlinks/flutter/ios"
+  openssl_flutter:
+    :path: ".symlinks/plugins/openssl_flutter/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 9d0fac939486c9aba2809b7982dfdbb47a7b0296
+  openssl_flutter: cbbdef89cfc27ae86825327b18ec88ae926502f2
+
+PODFILE CHECKSUM: 7765ea4305eaab0b3dfd384c7de11902aa3195fd
+
+COCOAPODS: 1.5.3
