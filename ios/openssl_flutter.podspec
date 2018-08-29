@@ -4,9 +4,9 @@
 Pod::Spec.new do |s|
   s.name             = 'openssl_flutter'
   s.version          = '0.0.1'
-  s.summary          = 'Flutter binding for OpenSSL'
+  s.summary          = 'Flutter binding of crypto algorithms from OpenSSL'
   s.description      = <<-DESC
-Flutter binding for OpenSSL
+Flutter binding of crypto algorithms from OpenSSL
                        DESC
   s.homepage         = 'http://example.com'
   s.license          = { :file => '../LICENSE' }

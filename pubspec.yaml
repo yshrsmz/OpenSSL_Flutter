@@ -1,5 +1,5 @@
 name: openssl_flutter
-description: Flutter binding of OpenSSL
+description: Flutter binding of crypto algorithms from OpenSSL
 version: 0.0.1
 author:
 homepage:
