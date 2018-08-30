@@ -71,7 +71,7 @@ cd ${OPENSSL_DIR}
 
 #./Configure dist
 
-for OPENSSL_TARGET_PLATFORM in armeabi armeabi-v7a x86 x86_64 arm64-v8a
+for OPENSSL_TARGET_PLATFORM in armeabi-v7a x86 x86_64 arm64-v8a
 do
     echo "Building for libcrypto.a for ${OPENSSL_TARGET_PLATFORM}"
     case "${OPENSSL_TARGET_PLATFORM}" in
@@ -85,7 +85,7 @@ do
         armeabi-v7a)
             TOOLCHAIN_ARCH=arm
             TOOLCHAIN_PREFIX=arm-linux-androideabi
-            CONFIGURE_ARCH=android-arm -march=armv7-a
+            CONFIGURE_ARCH=android-arm
             PLATFORM_OUTPUT_DIR=armeabi-v7a
             ANDROID_API_VERSION=${MINIMUM_ANDROID_SDK_VERSION}
         ;;
@@ -133,7 +133,7 @@ do
     fi
 
     make clean
-    make
+    make SHLIB_VERSION_NUMBER= SHLIB_EXT=.so
 
     if [ $? -ne 0 ]; then
         echo "Error executing make for platform:${OPENSSL_TARGET_PLATFORM}"
