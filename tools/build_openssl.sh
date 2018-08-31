@@ -2,21 +2,18 @@
 
 OPENSSL_VERSION=$1
 MINIMUM_ANDROID_SDK_VERSION=$2
-MINIMUM_ANDROID_64BIT_SDK_VERSION=$3
+BUILD_ANDROID=${3:-1}
+BUILD_IOS=${4:-1}
+
 NDK_TOOLCHAIN_VERSION=4.9
 
-(if [ ! ${OPENSSL_VERSION} ]; then
+( if [ ! ${OPENSSL_VERSION} ]; then
     echo "OPENSSL_VERSION was not provided, include and rerun"
     exit 1
 fi
 
 if [ ! ${MINIMUM_ANDROID_SDK_VERSION} ]; then
     echo "MINIMUM_ANDROID_SDK_VERSION was not provided, include and rerun"
-    exit 1
-fi
-
-if [ ! ${MINIMUM_ANDROID_64BIT_SDK_VERSION} ]; then
-    echo "MINIMUM_ANDROID_64_BIT_SDK_VERSION was not provided, include and rerun"
     exit 1
 fi
 
@@ -65,81 +62,89 @@ cd tools/build
 
 # download openssl
 wget ${OPENSSL_URL} -O ./openssl.tar.gz
-tar -zxvf openssl.tar.gz
+tar -zxf openssl.tar.gz
 
 cd ${OPENSSL_DIR}
 
 #./Configure dist
 
-for OPENSSL_TARGET_PLATFORM in armeabi-v7a x86 x86_64 arm64-v8a
-do
-    echo "Building for libcrypto.a for ${OPENSSL_TARGET_PLATFORM}"
-    case "${OPENSSL_TARGET_PLATFORM}" in
-        armeabi)
-            TOOLCHAIN_ARCH=arm
-            TOOLCHAIN_PREFIX=arm-linux-androideabi
-            CONFIGURE_ARCH=android-arm
-            PLATFORM_OUTPUT_DIR=armeabi
-            ANDROID_API_VERSION=${MINIMUM_ANDROID_SDK_VERSION}
-        ;;
-        armeabi-v7a)
-            TOOLCHAIN_ARCH=arm
-            TOOLCHAIN_PREFIX=arm-linux-androideabi
-            CONFIGURE_ARCH=android-arm
-            PLATFORM_OUTPUT_DIR=armeabi-v7a
-            ANDROID_API_VERSION=${MINIMUM_ANDROID_SDK_VERSION}
-        ;;
-        x86)
-            TOOLCHAIN_ARCH=x86
-            TOOLCHAIN_PREFIX=x86
-            CONFIGURE_ARCH=android-x86
-            PLATFORM_OUTPUT_DIR=x86
-            ANDROID_API_VERSION=${MINIMUM_ANDROID_SDK_VERSION}
-        ;;
-        x86_64)
-            TOOLCHAIN_ARCH=x86_64
-            TOOLCHAIN_PREFIX=x86_64
-            CONFIGURE_ARCH=android-x86_64
-            PLATFORM_OUTPUT_DIR=x86_64
-            ANDROID_API_VERSION=${MINIMUM_ANDROID_64BIT_SDK_VERSION}
-        ;;
-        arm64-v8a)
-            TOOLCHAIN_ARCH=arm64
-            TOOLCHAIN_PREFIX=aarch64-linux-android
-            CONFIGURE_ARCH=android-arm64
-            PLATFORM_OUTPUT_DIR=arm64-v8a
-            ANDROID_API_VERSION=${MINIMUM_ANDROID_64BIT_SDK_VERSION}
-        ;;
-        *)
-            echo "Unsupported build platform:${OPENSSL_TARGET_PLATFORM}"
-            exit 1
-    esac
+if [ ${BUILD_ANDROID} = 1 ]; then
+    for OPENSSL_TARGET_PLATFORM in armeabi-v7a x86 x86_64 arm64-v8a
+    do
+        echo "Building libcrypto.so for ${OPENSSL_TARGET_PLATFORM}"
+        case "${OPENSSL_TARGET_PLATFORM}" in
+            armeabi)
+                TOOLCHAIN_ARCH=arm
+                TOOLCHAIN_PREFIX=arm-linux-androideabi
+                CONFIGURE_ARCH=android-arm
+                PLATFORM_OUTPUT_DIR=armeabi
+                ANDROID_API_VERSION=${MINIMUM_ANDROID_SDK_VERSION}
+            ;;
+            armeabi-v7a)
+                TOOLCHAIN_ARCH=arm
+                TOOLCHAIN_PREFIX=arm-linux-androideabi
+                CONFIGURE_ARCH=android-arm
+                PLATFORM_OUTPUT_DIR=armeabi-v7a
+                ANDROID_API_VERSION=${MINIMUM_ANDROID_SDK_VERSION}
+            ;;
+            x86)
+                TOOLCHAIN_ARCH=x86
+                TOOLCHAIN_PREFIX=x86
+                CONFIGURE_ARCH=android-x86
+                PLATFORM_OUTPUT_DIR=x86
+                ANDROID_API_VERSION=${MINIMUM_ANDROID_SDK_VERSION}
+            ;;
+            x86_64)
+                TOOLCHAIN_ARCH=x86_64
+                TOOLCHAIN_PREFIX=x86_64
+                CONFIGURE_ARCH=android-x86_64
+                PLATFORM_OUTPUT_DIR=x86_64
+                ANDROID_API_VERSION=${MINIMUM_ANDROID_SDK_VERSION}
+            ;;
+            arm64-v8a)
+                TOOLCHAIN_ARCH=arm64
+                TOOLCHAIN_PREFIX=aarch64-linux-android
+                CONFIGURE_ARCH=android-arm64
+                PLATFORM_OUTPUT_DIR=arm64-v8a
+                ANDROID_API_VERSION=${MINIMUM_ANDROID_SDK_VERSION}
+            ;;
+            *)
+                echo "Unsupported build platform:${OPENSSL_TARGET_PLATFORM}"
+                exit 1
+        esac
 
-    mkdir -p "${ANDROID_LIB_ROOT}/${OPENSSL_TARGET_PLATFORM}"
+        mkdir -p "${ANDROID_LIB_ROOT}/${OPENSSL_TARGET_PLATFORM}"
 
-    export PATH=${ANDROID_NDK}/toolchains/${TOOLCHAIN_PREFIX}-${NDK_TOOLCHAIN_VERSION}/prebuilt/${TOOLCHAIN_SYSTEM}/bin:$PATH
-    echo $PATH
+        export PATH=${ANDROID_NDK}/toolchains/${TOOLCHAIN_PREFIX}-${NDK_TOOLCHAIN_VERSION}/prebuilt/${TOOLCHAIN_SYSTEM}/bin:$PATH
+        echo $PATH
 
-    #    RANLIB=${TOOLCHAIN_PREFIX}-ranlib \
-    # AR=${TOOLCHAIN_PREFIX}-ar \
-    # CC=${TOOLCHAIN_PREFIX}-gcc \
-    ./Configure "${CONFIGURE_ARCH}" \
+        ./Configure "${CONFIGURE_ARCH}" \
  -D__ANDROID_API__=${ANDROID_API_VERSION} \
  "${OPENSSL_CONFIGURE_OPTIONS}"
 
-    if [ $? -ne 0 ]; then
-        echo "Error executing:./Configure ${CONFIGURE_ARCH} ${OPENSSL_CONFIGURE_OPTIONS}"
-        exit 1
-    fi
+        if [ $? -ne 0 ]; then
+            echo "Error executing:./Configure ${CONFIGURE_ARCH} ${OPENSSL_CONFIGURE_OPTIONS}"
+            exit 1
+        fi
 
-    make clean
-    make SHLIB_VERSION_NUMBER= SHLIB_EXT=.so
+        make clean
+        make SHLIB_VERSION_NUMBER= SHLIB_EXT=.so
 
-    if [ $? -ne 0 ]; then
-        echo "Error executing make for platform:${OPENSSL_TARGET_PLATFORM}"
-        exit 1
-    fi
+        if [ $? -ne 0 ]; then
+            echo "Error executing make for platform:${OPENSSL_TARGET_PLATFORM}"
+            exit 1
+        fi
 
-    mv libcrypto.a ${ANDROID_LIB_ROOT}/${PLATFORM_OUTPUT_DIR}
-    mv libcrypto.so ${ANDROID_LIB_ROOT}/${PLATFORM_OUTPUT_DIR}
-done)
+        mv libcrypto.a ${ANDROID_LIB_ROOT}/${PLATFORM_OUTPUT_DIR}
+        mv libcrypto.so ${ANDROID_LIB_ROOT}/${PLATFORM_OUTPUT_DIR}
+    done
+fi
+
+#if [ ${BUILD_IOS} = 1 ]; then
+#    echo "Building iOS binaries..."
+#
+#    for OPENSSL_TARGET_PLATFORM in armv7 armv7s arm64
+#    do
+#        echo "Building libcrypto.a for ${OPENSSL_TARGET_PLATFORM}..."
+#    done
+#fi)
