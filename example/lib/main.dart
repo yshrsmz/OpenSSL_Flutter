@@ -61,7 +61,7 @@ class _MyAppState extends State<MyApp> {
           children: <Widget>[
             new Text('Running on: $_platformVersion\n'),
             new Text(
-              'Test -> $_digest',
+              'test -> $_digest',
               softWrap: true,
             ),
           ],
