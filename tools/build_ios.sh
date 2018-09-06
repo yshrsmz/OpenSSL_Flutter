@@ -12,6 +12,7 @@ OPENSSL_URL=https://openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz
 
 EXEC_DIR=$(pwd)
 BUILD_DIR=${EXEC_DIR}/tools/build
+OUT_DIR=${BUILD_DIR}/openssl-ios
 
 
 # clean up build directory
@@ -23,30 +24,34 @@ cd tools/build
 if [ ! -e "openssl.tar.gz" ]; then
     wget ${OPENSSL_URL} -O ./openssl.tar.gz
 fi
-tar -zxf openssl.tar.gz
+# tar -zxf openssl.tar.gz
 
-cd ${OPENSSL_DIR}
+# cd ${OPENSSL_DIR}
 
 for TARGET in ios-xcrun ios64-xcrun iossimulator-xcrun
 do
     echo "Building libcrypto.a for ${TARGET}..."
-    OUT_DIR="${BUILD_DIR}/ios-libs/${TARGET}"
 
-    rm -rf ${OUT_DIR}
-    mkdir -p ${OUT_DIR}
+    tar -zxf openssl.tar.gz
+    TMP_OUT_DIR=openssl_${TARGET}
+    rm -rf ${TMP_OUT_DIR}
+    mv $OPENSSL_DIR ${TMP_OUT_DIR}
+    cd ${TMP_OUT_DIR}
 
     ./Configure ${TARGET} no-async no-shared
 
     make clean
     make
+    make install
 
-    mv ./libcrypto.a ${OUT_DIR}
+    # mv ./libcrypto.a ${OUT_DIR}
+
+    cd ../
 
 done
 
-
-
-
-
+mkdir -p ${BUILD_DIR}/openssl-ios
+lipo -create openssl_ios-xcrun/libcrypto.a openssl_ios64-xcrun/libcrypto.a openssl_iossimulator-xcrun/libcrypto.a -output ${BUILD_DIR}/openssl-ios/libcrypto.a
+cp -r openssl_ios-xcrun/include ${BUILD_DIR}/openssl-ios
 
 echo "finished")
