@@ -12,7 +12,10 @@ OPENSSL_URL=https://openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz
 
 EXEC_DIR=$(pwd)
 BUILD_DIR=${EXEC_DIR}/tools/build
-OUT_DIR=${BUILD_DIR}/openssl-ios
+OUT_DIR=${EXEC_DIR}/ios/OpenSSL
+
+rm -rf ${OUT_DIR}
+mkdir -p ${OUT_DIR}/lib
 
 
 # clean up build directory
@@ -44,14 +47,13 @@ do
     make
     make install
 
-    # mv ./libcrypto.a ${OUT_DIR}
-
     cd ../
 
 done
 
 mkdir -p ${BUILD_DIR}/openssl-ios
-lipo -create openssl_ios-xcrun/libcrypto.a openssl_ios64-xcrun/libcrypto.a openssl_iossimulator-xcrun/libcrypto.a -output ${BUILD_DIR}/openssl-ios/libcrypto.a
-cp -r openssl_ios-xcrun/include ${BUILD_DIR}/openssl-ios
+lipo -create openssl_ios-xcrun/libcrypto.a openssl_ios64-xcrun/libcrypto.a openssl_iossimulator-xcrun/libcrypto.a -output ${OUT_DIR}/lib/libcrypto.a
+lipo -create openssl_ios-xcrun/libssl.a openssl_ios64-xcrun/libssl.a openssl_iossimulator-xcrun/libssl.a -output ${OUT_DIR}/lib/libssl.a
+cp -r openssl_ios-xcrun/include ${OUT_DIR}
 
 echo "finished")
