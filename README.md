@@ -1,6 +1,6 @@
 # openssl_flutter
 
-Flutter binding of crypto algorithms from OpenSSL
+A new flutter plugin project.
 
 ## Getting Started
 
