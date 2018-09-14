@@ -1,0 +1,18 @@
+module openssl_flutter [system] {
+    //umbrella header "shim.h"
+    header "openssl/conf.h"
+    header "openssl/evp.h"
+    header "openssl/err.h"
+    header "openssl/bio.h"
+    header "openssl/ssl.h"
+    header "openssl/md4.h"
+    header "openssl/md5.h"
+    header "openssl/sha.h"
+    header "openssl/hmac.h"
+    header "openssl/rand.h"
+    header "openssl/ripemd.h"
+    header "openssl/pkcs12.h"
+    header "openssl/x509v3.h"
+    
+    export *
+}
