@@ -12,16 +12,19 @@ public class SwiftOpensslFlutterPlugin: NSObject, FlutterPlugin {
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
     switch call.method {
+    case "getPlatformVersion":
+        result("iOS " + UIDevice.current.systemVersion)
     case "getSha512Digest":
-        result(getSha512Digest())
+        let args = call.arguments as! [String:Any]
+        result(getSha512Digest(args["source"] as! String))
     default:
         result("iOS " + UIDevice.current.systemVersion)
     }
   }
     
-    func getSha512Digest() -> String {
+    func getSha512Digest(_ target: String) -> String {
         var ctxp = RIPEMD160_CTX()
-        let data = "test".cString(using: .utf8)
+        let data = target.cString(using: .utf8)
         var result = [UInt8](repeating: 0, count: Int(RIPEMD160_DIGEST_LENGTH))
         
         RIPEMD160_Init(&ctxp)
