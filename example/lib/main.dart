@@ -16,6 +16,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
   String _digest = 'Unknown';
+  String _message = "test";
 
   @override
   void initState() {
@@ -36,9 +37,9 @@ class _MyAppState extends State<MyApp> {
 
     try {
       final md = MessageDigest(DigestType.SHA512);
-      digest = HEX.encode(await md.digest("test"));
+      digest = HEX.encode(await md.digest(_message));
     } on PlatformException {
-      digest = "Failed to get platform version.";
+      digest = "Failed to get digest for $_message";
     }
 
     // If the widget was removed from the tree while the asynchronous platform
@@ -64,7 +65,7 @@ class _MyAppState extends State<MyApp> {
           children: <Widget>[
             new Text('Running on: $_platformVersion\n'),
             new Text(
-              'test -> $_digest',
+              '$_message -> $_digest',
               softWrap: true,
             ),
           ],
