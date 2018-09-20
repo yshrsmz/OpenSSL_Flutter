@@ -23,6 +23,9 @@ public class OpensslFlutterPlugin implements MethodCallHandler {
       case "getSha512Digest":
         result.success(getSha512Digest(call.<String>argument("source")));
         break;
+      case "getDigest":
+        result.success(getDigest(call.<String>argument("type"), call.<String>argument("message")));
+        break;
       default:
         result.notImplemented();
         break;
@@ -30,6 +33,8 @@ public class OpensslFlutterPlugin implements MethodCallHandler {
   }
 
   public native String getSha512Digest(String target);
+
+  public native byte[] getDigest(String digestType, String message);
 
   static {
     System.loadLibrary("crypto-main");

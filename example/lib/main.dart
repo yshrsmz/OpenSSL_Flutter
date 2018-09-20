@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:openssl_flutter/openssl_flutter.dart';
+import 'package:openssl_flutter/src/method_channel.dart';
+import 'package:hex/hex.dart';
 
 void main() => runApp(new MyApp());
 
@@ -27,13 +29,14 @@ class _MyAppState extends State<MyApp> {
     String digest;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
-      platformVersion = await OpensslFlutter.platformVersion;
+      platformVersion = await OpenSSLFlutterMethodChannel.platformVersion;
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }
 
     try {
-      digest = await OpensslFlutter.getSha512Digest("test");
+      final md = MessageDigest(DigestType.SHA512);
+      digest = HEX.encode(await md.digest("test"));
     } on PlatformException {
       digest = "Failed to get platform version.";
     }
