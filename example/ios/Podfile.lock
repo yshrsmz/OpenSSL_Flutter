@@ -4,18 +4,18 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
-  - Flutter (from `.symlinks/flutter/ios`)
+  - Flutter (from `.symlinks/flutter/ios-release`)
   - openssl_flutter (from `.symlinks/plugins/openssl_flutter/ios`)
 
 EXTERNAL SOURCES:
   Flutter:
-    :path: ".symlinks/flutter/ios"
+    :path: ".symlinks/flutter/ios-release"
   openssl_flutter:
     :path: ".symlinks/plugins/openssl_flutter/ios"
 
 SPEC CHECKSUMS:
   Flutter: 9d0fac939486c9aba2809b7982dfdbb47a7b0296
-  openssl_flutter: 24e91147a65389506921eb74e0d99d97a046482a
+  openssl_flutter: dd2f23e81fd9d8e9261332f549fcde5121543846
 
 PODFILE CHECKSUM: 6dc952f4e329e4efede07b370ff9d46e94f98f7c
 

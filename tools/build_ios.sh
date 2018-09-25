@@ -46,7 +46,6 @@ do
 
     make clean
     make
-    make install
 
     cd ../
 
