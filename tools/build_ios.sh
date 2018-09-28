@@ -60,12 +60,8 @@ lipo -create openssl_ios-xcrun/libssl.a openssl_ios64-xcrun/libssl.a openssl_ios
 
 cp -r openssl_ios-xcrun/include/openssl ${UNIFIED_DIR}/include
 
-sed -i '' '/^#  include <inttypes.h>/d' ${UNIFIED_DIR}/include/openssl/e_os2.h
 rm ${UNIFIED_DIR}/include/openssl/__DECC_INCLUDE_EPILOGUE.H
 rm ${UNIFIED_DIR}/include/openssl/__DECC_INCLUDE_PROLOGUE.H
 rm ${UNIFIED_DIR}/include/openssl/asn1_mac.h
-
-cp -r ${UNIFIED_DIR}/include ${OUT_DIR}
-cp -r ${UNIFIED_DIR}/lib ${OUT_DIR}
 
 echo "finished")

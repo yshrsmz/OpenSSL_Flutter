@@ -1,5 +1,6 @@
 framework module openssl {
     umbrella header "umbrella.h"
+    header "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/clang/include/inttypes.h"
 
     link "ssl"
     link "crypto"
