@@ -14,9 +14,6 @@ public class SwiftOpensslFlutterPlugin: NSObject, FlutterPlugin {
     switch call.method {
     case "getPlatformVersion":
         result("iOS " + UIDevice.current.systemVersion)
-    case "getSha512Digest":
-        let args = call.arguments as! [String:Any]
-        result(getSha512Digest(args["source"] as! String))
     case "getDigest":
         let args = call.arguments as! [String: Any]
         result(getDigest(digestType: args["type"] as! String, message: args["message"] as! String))
@@ -24,23 +21,6 @@ public class SwiftOpensslFlutterPlugin: NSObject, FlutterPlugin {
         result("iOS " + UIDevice.current.systemVersion)
     }
   }
-
-    func getSha512Digest(_ target: String) -> String {
-        let data = target.cString(using: .utf8)
-        var result = [UInt8](repeating: 0, count: Int(EVP_MAX_MD_SIZE))
-        var md_len: UInt32 = 0
-
-        let ctx = EVP_MD_CTX_new()
-        let md = EVP_get_digestbyname("SHA512")
-        EVP_DigestInit_ex(ctx, md, nil)
-        EVP_DigestUpdate(ctx, data, data!.count - 1)
-        EVP_DigestFinal_ex(ctx, &result, &md_len)
-        EVP_MD_CTX_free(ctx)
-
-        let actual = result[0..<Int(md_len)]
-
-        return actual.hexa
-    }
     
     func getDigest(digestType: String, message: String) -> FlutterStandardTypedData {
         let type = digestType.cString(using: .utf8)

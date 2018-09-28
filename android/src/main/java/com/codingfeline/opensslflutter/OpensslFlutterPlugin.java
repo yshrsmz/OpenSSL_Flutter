@@ -20,9 +20,6 @@ public class OpensslFlutterPlugin implements MethodCallHandler {
       case "getPlatformVersion":
         result.success("Android " + android.os.Build.VERSION.RELEASE);
         break;
-      case "getSha512Digest":
-        result.success(getSha512Digest(call.<String>argument("source")));
-        break;
       case "getDigest":
         result.success(getDigest(call.<String>argument("type"), call.<String>argument("message")));
         break;
@@ -31,8 +28,6 @@ public class OpensslFlutterPlugin implements MethodCallHandler {
         break;
     }
   }
-
-  public native String getSha512Digest(String target);
 
   public native byte[] getDigest(String digestType, String message);
 

@@ -13,12 +13,6 @@ class OpenSSLFlutterMethodChannel {
     return version;
   }
 
-  static Future<String> getSha512Digest(String source) async {
-    final String digest = await _channel
-        .invokeMethod("getSha512Digest", <String, dynamic>{'source': source});
-    return digest;
-  }
-
   static Future<Uint8List> getDigest(String digestType, String message) async {
     final args = <String, dynamic>{
       'type': digestType,
