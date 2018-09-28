@@ -16,8 +16,19 @@ class OpenSSLFlutterMethodChannel {
   static Future<Uint8List> getDigest(String digestType, String message) async {
     final args = <String, dynamic>{
       'type': digestType,
-      'message': message
+      'message': message,
     };
     return await _channel.invokeMethod("getDigest", args);
+  }
+
+  static Future<Uint8List> getPBKDF2withHMAC(String password, String salt, String digestType, int iteration, int keyLength) async {
+    final args = <String, dynamic>{
+      'password': password,
+      'salt': salt,
+      'digestType': digestType,
+      'iteration': iteration,
+      'keyLength': keyLength,
+    };
+    return await _channel.invokeMethod("getPBKDF2withHMAC", args);
   }
 }

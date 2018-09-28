@@ -17,6 +17,14 @@ public class SwiftOpensslFlutterPlugin: NSObject, FlutterPlugin {
     case "getDigest":
         let args = call.arguments as! [String: Any]
         result(getDigest(digestType: args["type"] as! String, message: args["message"] as! String))
+    case "getPBKDF2withHMAC":
+        let args = call.arguments as! [String: Any]
+        result(getPBKDF2withHMAC(
+            password: args["password"] as! String,
+            salt: args["salt"] as! String,
+            digestType: args["digestType"] as! String,
+            iteration: args["iteration"] as! Int,
+            keyLength: args["keyLength"] as! Int))
     default:
         result("iOS " + UIDevice.current.systemVersion)
     }
@@ -50,6 +58,19 @@ public class SwiftOpensslFlutterPlugin: NSObject, FlutterPlugin {
         RIPEMD160_Final(&result, &ctxp)
 
         return result.hexa
+    }
+    
+    func getPBKDF2withHMAC(password: String, salt: String, digestType: String, iteration: Int, keyLength: Int) -> FlutterStandardTypedData {
+        let cPassword = password.cString(using: .utf8)
+        let cSalt = Array(salt.utf8)
+        let cType = digestType.cString(using: .utf8)
+        var result = [UInt8](repeating: 0, count: keyLength)
+        
+        
+        PKCS5_PBKDF2_HMAC(cPassword, Int32(cPassword!.count), cSalt, Int32(cSalt.count), Int32(iteration), EVP_get_digestbyname(cType), Int32(keyLength), &result)
+        
+        let actual = FlutterStandardTypedData(bytes: Data(bytes: result))
+        return actual
     }
 }
 
